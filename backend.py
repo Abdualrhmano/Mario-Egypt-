@@ -20,7 +20,8 @@ from fastapi import (
     FastAPI, HTTPException, Depends, BackgroundTasks, WebSocket, WebSocketDisconnect, Request, Query
 )
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, validator, BaseSettings
+from pydantic import BaseModel, Field, validator
+from pydantic_settings import BaseSettings
 from sqlalchemy import (
     create_engine, Column, Integer, String, DateTime, JSON, Boolean, func, Index, ForeignKey
 )
