@@ -1,19 +1,25 @@
 #!/bin/bash
 
-# 1. تنظيف العمليات
+# 1. تنظيف العمليات القديمة
 pkill -f uvicorn
 pkill -f vite
 
-# 2. مكتبات الباك إند
+# 2. تجهيز الباك إند
 pip install fastapi uvicorn sqlalchemy passlib bcrypt python-jose pydantic pydantic-settings websockets python-multipart > /dev/null 2>&1
 [ ! -f .env ] && echo 'JWT_SECRET="Khufu_Safe_2026"' > .env
 
-# 3. مكتبات الفرانت إند (الحل هنا: إضافة @tailwindcss/postcss)
+# 3. إنشاء مجلد الفرانت إند لو مش موجود (حل المشكلة اللي في الصورة)
+if [ ! -d "frontend" ]; then
+    echo "📦 مجلد frontend غير موجود، جاري إنشاؤه..."
+    npm create vite@latest frontend -- --template react > /dev/null 2>&1
+fi
+
+# 4. دخول المجلد وتثبيت المكتبات
 cd frontend || exit
 npm install axios jwt-decode react-router-dom lucide-react > /dev/null 2>&1
 npm install -D tailwindcss @tailwindcss/postcss postcss autoprefixer > /dev/null 2>&1
 
-# 4. تحديث ملف postcss.config.js للنسخة الجديدة
+# 5. تحديث ملفات الإعدادات
 cat << 'EOF' > postcss.config.js
 export default {
   plugins: {
@@ -23,9 +29,7 @@ export default {
 }
 EOF
 
-# 5. تحديث tailwind.config.js
 cat << 'EOF' > tailwind.config.js
-/** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: { extend: {} },
@@ -33,7 +37,6 @@ export default {
 }
 EOF
 
-# 6. كتابة ملف CSS نظيف
 cat << 'EOF' > src/index.css
 @tailwind base;
 @tailwind components;
@@ -41,7 +44,7 @@ cat << 'EOF' > src/index.css
 body { margin: 0; background-color: #07070a; color: white; }
 EOF
 
-# 7. نقل وإصلاح الكود الرئيسي
+# 6. نقل ملف اللعبة وإصلاح الأخطاء
 cd ..
 if [ -f "frontend_game.jsx" ]; then
     cp -f frontend_game.jsx frontend/src/main.jsx
@@ -50,7 +53,7 @@ if [ -f "frontend_game.jsx" ]; then
     sed -i '/<AppRoot \/>);/q' frontend/src/main.jsx
 fi
 
-# 8. التشغيل
+# 7. التشغيل النهائي
 uvicorn backend:app --reload --port 8000 &
 cd frontend || exit
 npm run dev -- --host
