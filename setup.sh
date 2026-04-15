@@ -4,9 +4,7 @@
 echo "🧹 تنظيف العمليات القديمة والكاش..."
 pkill -f uvicorn
 pkill -f vite
-# مسح أي قفل قديم للمكتبات
-find . -name "package-lock.json" -delete
-find . -name "node_modules" -type d -prune -exec rm -rf {} +
+npm cache clean --force > /dev/null 2>&1
 
 # 2. تجهيز الباك إند وملف البيئة
 echo "📦 تثبيت مكتبات الباك إند..."
@@ -16,10 +14,10 @@ if [ ! -f .env ]; then
     echo 'JWT_SECRET="ENGINEER_ABDULRAHMAN_KHUFU_PRO_2026"' > .env
 fi
 
-# 3. إنشاء وإعداد مجلد الفرانت إند (بشكل آلي صامت)
+# 3. إنشاء وإعداد مجلد الفرانت إند (بشكل آلي صامت بالكامل)
 if [ ! -d "frontend" ]; then
     echo "🏗️ جاري إنشاء مجلد frontend من الصفر..."
-    # استخدمنا --yes و -- لضمان عدم توقف السكريبت للسؤال عن اسم المشروع
+    # استخدمنا --yes لضمان عدم توقف السكريبت للسؤال عن اسم المشروع واختيار React تلقائياً
     npm create vite@latest frontend --yes -- --template react > /dev/null 2>&1
 fi
 
